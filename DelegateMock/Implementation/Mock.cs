@@ -61,32 +61,31 @@ namespace DelegateMock.Implementation
       //mo¿e linked list? // przerobiæ na kontunuacje
       public ReadOnlyCollection<CallReport> GetCallReports(Delegate @delegate)
       {
-         //return _dic[@delegate].ToList().AsReadOnly();
          List<CallReport> list;
          if (_dic.TryGetValue(@delegate, out list))
             return list.AsReadOnly();
 
          return new List<CallReport>().AsReadOnly();
       }
-      /*
-      // na extension przerobiæ
-      public bool WasCalled(Delegate @delegate)
-      {
-         return _dic.ContainsKey(@delegate);
-      }*/
 
       // na extension przerobiæ
       public void AssertThatWasCalled(CallOccurrence call)
       {
-         CallReport callReport;
-         if (call.TryGetCallRaport(GetCallReports(call.Delegate), out callReport) == false)
+         if (GetCallRaportsFilteredBy(call).Any() == false)
             throw new Exception("Funkcja nie by³a wo³ana");
+      }
+
+      private IEnumerable<CallReport> GetCallRaportsFilteredBy(CallOccurrence call)
+      {
+         return call.GetCallRaport(GetCallReports(call.Delegate));
       }
 
       // na extension przerobiæ
       public void AssertThatWasCalledInOrder(params CallOccurrence[] calls)
       {
-         //calls.Lenght != 0
+         if (calls.Length == 0)
+            throw new Exception("Z³e u¿ycie.");
+
          CallOccurrence previousCall = calls.First();
          AssertThatWasCalled(previousCall);
          
@@ -94,10 +93,7 @@ namespace DelegateMock.Implementation
          {
             AssertThatWasCalled(call);
 
-            ReadOnlyCollection<CallReport> previous = GetCallReports(previousCall.Delegate);
-            ReadOnlyCollection<CallReport> current = GetCallReports(call.Delegate);
-
-            if (previousCall.GetCallRaport(previous).Order > call.GetCallRaport(current).Order)
+            if (GetCallRaportsFilteredBy(previousCall).Single().Order > GetCallRaportsFilteredBy(call).Single().Order)
                throw new Exception("Kolejnoœæ nie zosta³a spe³niona");
 
             previousCall = call;
@@ -126,25 +122,11 @@ namespace DelegateMock.Implementation
          return new CallOccurrence(d, new List<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>>().AsReadOnly());
       }
 
-      public bool TryGetCallRaport(IEnumerable<CallReport> callReports, out CallReport callReport)
+      public IEnumerable<CallReport> GetCallRaport(IEnumerable<CallReport> callReports)
       {
          IEnumerable<CallReport> reports = _filters.Aggregate(callReports, (current, filter) => filter(current));
 
-         foreach (var report in reports.OrderBy(x => x.Order))
-         {
-            callReport = report;
-            return true;
-         }
-
-         callReport = default(CallReport);
-         return false;
-      }
-
-      public CallReport GetCallRaport(IEnumerable<CallReport> callReports)
-      {
-         IEnumerable<CallReport> reports = _filters.Aggregate(callReports, (current, filter) => filter(current));
-
-         return reports.OrderBy(x => x.Order).First();
+         return reports.OrderBy(x => x.Order).Take(1);
       }
 
       public CallOccurrence AddFilter(Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
