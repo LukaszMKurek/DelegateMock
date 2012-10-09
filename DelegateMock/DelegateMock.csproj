@@ -43,12 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CallOrderTests.cs" />
-    <Compile Include="Implementation\CallOrder.cs" />
     <Compile Include="Implementation\CallReport.cs" />
-    <Compile Include="Implementation\ICallOrder.cs" />
-    <Compile Include="Implementation\CallOrderExtension.cs" />
     <Compile Include="Implementation\Mock.cs" />
-    <Compile Include="Implementation\MockExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

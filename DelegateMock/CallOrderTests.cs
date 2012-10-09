@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using DelegateMock.Implementation;
 using NUnit.Framework;
@@ -18,7 +17,8 @@ namespace DelegateMock
 
          fun1(1);
 
-         Assert.That(_.WasCalled(fun1));
+         //Assert.That(_.WasCalled(fun1));
+         _.AssertThatWasCalled(fun1);
       }
 
       [Test]
@@ -29,7 +29,9 @@ namespace DelegateMock
 
          //fun1(1);
 
-         Assert.That(_.WasCalled(fun1) == false);
+         //Assert.That(_.WasCalled(fun1) == false);
+         var exception = Assert.Throws<Exception>(() => _.AssertThatWasCalled(fun1));
+         Assert.That(exception.Message, Is.EqualTo("Funkcja nie była wołana"));
       }
 
       [Test]
@@ -42,7 +44,9 @@ namespace DelegateMock
          fun1(1);
          fun2(1);
 
-         _.AfterCall(fun1).NextCallWas(fun2).Verify();
+         //_.AfterCall(fun1).NextCallWas(fun2).Verify();
+         //_.AssertThat(fun1.WasCalled().AndNextCalledWas(fun2));
+         _.AssertThatWasCalledInOrder(fun1, fun2);
       }
 
       [Test]
@@ -55,7 +59,8 @@ namespace DelegateMock
          fun2(1);
          fun1(1);
 
-         Assert.Throws<Exception>(() => _.AfterCall(fun1).NextCallWas(fun2).Verify());
+         var exception = Assert.Throws<Exception>(() => _.AssertThatWasCalledInOrder(fun1, fun2));
+         Assert.That(exception.Message, Is.EqualTo("Kolejność nie została spełniona"));
       }
 
       [Test]
@@ -67,7 +72,8 @@ namespace DelegateMock
 
          fun1(1);
 
-         Assert.Throws<Exception>(() => _.AfterCall(fun1).NextCallWas(fun2).Verify());
+         var exception = Assert.Throws<Exception>(() => _.AssertThatWasCalledInOrder(fun1, fun2));
+         Assert.That(exception.Message, Is.EqualTo("Funkcja nie była wołana"));
       }
 
       [Test]
@@ -79,7 +85,8 @@ namespace DelegateMock
 
          fun2(1);
 
-         Assert.Throws<Exception>(() => _.AfterCall(fun1).NextCallWas(fun2).Verify());
+         var exception = Assert.Throws<Exception>(() => _.AssertThatWasCalledInOrder(fun1, fun2));
+         Assert.That(exception.Message, Is.EqualTo("Funkcja nie była wołana"));
       }
 
       [Test]
@@ -89,11 +96,27 @@ namespace DelegateMock
          var fun1 = _.Func((int i) => i * 2);
          var fun2 = _.Func((int i) => i * 3);
 
-         fun2(1);
+         fun2(1); // można doprecyzować że chodzi o first call
          fun1(1);
          fun2(1);
 
-         _.AfterCall(fun1).NextCallWas(fun2).Verify();
+         //_.AfterCall(fun1).NextCallWas(fun2).Verify();
+         var exception = Assert.Throws<Exception>(() => _.AssertThatWasCalledInOrder(fun1, fun2));
+         Assert.That(exception.Message, Is.EqualTo("Kolejność nie została spełniona"));
+      }
+
+      [Test]
+      public void T07_1()
+      {
+         var _ = Mock.New;
+         var fun1 = _.Func((int i) => i * 2);
+         var fun2 = _.Func((int i) => i * 3);
+
+         fun2(1); // można doprecyzować że chodzi o first call
+         fun1(1);
+         fun2(2);
+
+         _.AssertThatWasCalledInOrder(fun1, fun2.WithArgs(2));
       }
 
       [Test]
@@ -104,7 +127,8 @@ namespace DelegateMock
 
          fun1(1);
 
-         Assert.That(_.WasCalled2(fun1).WithArgs(1));
+         //Assert.That(_.WasCalled2(fun1).WithArgs(1));
+         _.AssertThatWasCalled(fun1.WithArgs(1));
       }
 
       [Test]
@@ -113,35 +137,37 @@ namespace DelegateMock
          var _ = Mock.New;
          var fun1 = _.Func((int i) => i * 2);
 
+         fun1(1);
+         fun1(2);
+
+         _.AssertThatWasCalled(fun1.WithArgs(2));
+      }
+
+      [Test]
+      public void T10()
+      {
+         var _ = Mock.New;
+         var fun1 = _.Func((int i) => i * 2);
+
+         fun1(1);
+
+         //Assert.That(_.WasCalled2(fun1).WithArgs(1));
+         var exception = Assert.Throws<Exception>(() => _.AssertThatWasCalled(fun1.WithArgs(2)));
+         Assert.That(exception.Message, Is.EqualTo("Funkcja nie była wołana"));
+      }
+
+      [Test]
+      public void T11()
+      {
+         var _ = Mock.New;
+         var fun1 = _.Func((int i) => i * 2);
+
          //fun1(1);
 
-         Assert.That(_.WasCalled2(fun1).WithArgs(1) == false);
-      }
-   }
-
-   public sealed class CallReportsWraper
-   {
-      public CallReportsWraper(IEnumerable<CallReport> callOrders)
-      {
-         CallReports = callOrders.ToList().AsReadOnly();
-      }
-
-      public ReadOnlyCollection<CallReport> CallReports { get; private set; }
-   }
-
-   public static class MockExtension2
-   {
-      public static CallReportsWraper WasCalled2(this Mock mock, Delegate @delegate)
-      {
-         if (mock.WasCalled(@delegate))
-            return new CallReportsWraper(mock.GetCallReports(@delegate));
-
-         return new CallReportsWraper(new CallReport[0]);
-      }
-
-      public static bool WithArgs(this CallReportsWraper callReportses, params object[] args)
-      {
-         return callReportses.CallReports.Any(c => c.Arguments.SequenceEqual(args));
+         //Assert.That(_.WasCalled2(fun1).WithArgs(1) == false); // .Verifi może zostać zapomniane 
+         //_.AssertThat(_.WasCalled2(fun1).WithArgs(1));
+         var exception = Assert.Throws<Exception>(() => _.AssertThatWasCalled(fun1.WithArgs(1)));
+         Assert.That(exception.Message, Is.EqualTo("Funkcja nie była wołana"));
       }
    }
 }
