@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using DelegateMock.FunctionStub;
 
 namespace DelegateMock.Implementation
 {
@@ -18,6 +19,11 @@ namespace DelegateMock.Implementation
       public static Mock New
       {
          get { return new Mock(); }
+      }
+
+      public Func<TP1, TRet> Func<TP1, TRet>(Node<TP1, TRet> node)
+      {
+         return Func(node.AsFunc());
       }
 
       public Func<TP1, TRet> Func<TP1, TRet>(Func<TP1, TRet> func)
