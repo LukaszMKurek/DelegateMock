@@ -131,7 +131,9 @@ namespace DelegateMock
 
          _.AssertThatWasCalledInOrder(fun1.WithArgs(2), fun1.WithArgs(3));
          _.AssertThatWasCalledInOrder(fun1.WithArgs(3), fun1.WithArgs(2).SecondCall());
-         _.AssertThatWasCalledInOrder(fun1.WithArgs(3), fun1.WithArgs(3)); // todo źle
+
+         var exception = Assert.Throws<Exception>(() => _.AssertThatWasCalledInOrder(fun1.WithArgs(3), fun1.WithArgs(3)));
+         Assert.That(exception.Message, Is.EqualTo("Kolejność nie została spełniona"));
       }
 
       [Test]
@@ -149,6 +151,21 @@ namespace DelegateMock
       }
 
       [Test]
+      public void T07_4()
+      {
+         var _ = Mock.New;
+         var fun1 = _.Func((int i) => i * 2);
+
+         fun1(2);
+         fun1(3);
+         fun1(3);
+
+         _.AssertThatWasCalledInOrder(fun1.WithArgs(3), fun1.WithArgs(3).SecondCall());
+      }
+
+      // todo CalledTwice()
+
+      [Test]
       public void T08()
       {
          var _ = Mock.New;
@@ -158,6 +175,19 @@ namespace DelegateMock
 
          //Assert.That(_.WasCalled2(fun1).WithArgs(1));
          _.AssertThatWasCalled(fun1.WithArgs(1));
+      }
+
+      [Test]
+      public void T08_1()
+      {
+         var _ = Mock.New;
+         var fun1 = _.Func((int i) => i * 2);
+
+         fun1(4);
+
+         _.AssertThatWasCalled(fun1.WithArgs(i => i > 2));
+         var exception = Assert.Throws<Exception>(() => _.AssertThatWasCalled(fun1.WithArgs(i => i < 4)));
+         Assert.That(exception.Message, Is.EqualTo("Funkcja nie była wołana"));
       }
 
       [Test]
@@ -197,6 +227,58 @@ namespace DelegateMock
          //_.AssertThat(_.WasCalled2(fun1).WithArgs(1));
          var exception = Assert.Throws<Exception>(() => _.AssertThatWasCalled(fun1.WithArgs(1)));
          Assert.That(exception.Message, Is.EqualTo("Funkcja nie była wołana"));
+      }
+
+      [Test]
+      public void T12()
+      {
+         var _ = Mock.New;
+         var fun1 = _.Func((int i) => { 
+            throw new Exception();
+            return 0;
+         });
+
+         try
+         {
+            fun1(2);
+         }
+         catch
+         {}
+         
+
+         _.AssertThatWasCalled(fun1.WithArgs(2));
+      }
+
+      [Test]
+      public void T13()
+      {
+         var _ = Mock.New;
+         var fun1 = _.Func((int i) =>
+         {
+            throw new Exception();
+            return 0;
+         });
+
+         try
+         {
+            fun1(2);
+         }
+         catch
+         { }
+
+
+         _.AssertThatWasCalled(fun1.WithArgs(2).ThatThrows<Exception>());
+      }
+
+      [Test]
+      public void T14()
+      {
+         var _ = Mock.New;
+         var fun1 = _.Func((int i) => 5);
+
+         fun1(2);
+         
+         _.AssertThatWasCalled(fun1.WithArgs(2).ThatReturn(5));
       }
    }
 }

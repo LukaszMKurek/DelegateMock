@@ -69,31 +69,31 @@ namespace DelegateMock.Implementation
       }
 
       // na extension przerobiæ
-      public void AssertThatWasCalled(CallOccurrence call)
+      public void AssertThatWasCalled(CallOccurrenceBase call)
       {
          if (GetCallRaportsFilteredBy(call).Any() == false)
             throw new Exception("Funkcja nie by³a wo³ana");
       }
 
-      private IEnumerable<CallReport> GetCallRaportsFilteredBy(CallOccurrence call)
+      private IEnumerable<CallReport> GetCallRaportsFilteredBy(CallOccurrenceBase call)
       {
          return call.GetCallRaport(GetCallReports(call.Delegate));
       }
 
       // na extension przerobiæ
-      public void AssertThatWasCalledInOrder(params CallOccurrence[] calls)
+      public void AssertThatWasCalledInOrder(params CallOccurrenceBase[] calls)
       {
          if (calls.Length == 0)
             throw new Exception("Z³e u¿ycie.");
 
-         CallOccurrence previousCall = calls.First();
+         CallOccurrenceBase previousCall = calls.First();
          AssertThatWasCalled(previousCall);
          
          foreach (var call in calls.Skip(1))
          {
             AssertThatWasCalled(call);
 
-            if (GetCallRaportsFilteredBy(previousCall).Single().Order >= GetCallRaportsFilteredBy(call).Single().Order)
+            if (GetCallRaportsFilteredBy(previousCall).Single().Order + 1 != GetCallRaportsFilteredBy(call).Single().Order)
                throw new Exception("Kolejnoœæ nie zosta³a spe³niona");
 
             previousCall = call;
@@ -101,12 +101,13 @@ namespace DelegateMock.Implementation
       }
    }
 
-   public sealed class CallOccurrence
+   // todo to bêdzie u¿ywane do delegat nie generycznych
+   public /*abstract*/ class CallOccurrenceBase
    {
       private readonly Delegate _delegate;
-      private readonly ReadOnlyCollection<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> _filters; 
+      protected readonly ReadOnlyCollection<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> _filters;
 
-      private CallOccurrence(Delegate @delegate, ReadOnlyCollection<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> filters)
+      protected CallOccurrenceBase(Delegate @delegate, ReadOnlyCollection<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> filters)
       {
          _delegate = @delegate;
          _filters = filters;
@@ -117,11 +118,6 @@ namespace DelegateMock.Implementation
          get { return _delegate; }
       }
 
-      public static implicit operator CallOccurrence(Delegate d)
-      {
-         return new CallOccurrence(d, new List<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>>().AsReadOnly());
-      }
-
       public IEnumerable<CallReport> GetCallRaport(IEnumerable<CallReport> callReports)
       {
          IEnumerable<CallReport> reports = _filters.Aggregate(callReports, (current, filter) => filter(current));
@@ -129,34 +125,86 @@ namespace DelegateMock.Implementation
          return reports.OrderBy(x => x.Order).Take(1);
       }
 
-      public CallOccurrence AddFilter(Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
+      public CallOccurrenceBase AddFilter(Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
       {
-         return new CallOccurrence(
-            _delegate, 
+         return new CallOccurrenceBase(
+            Delegate,
+            new List<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>>(_filters) { filter }.AsReadOnly());
+      }
+
+      public static implicit operator CallOccurrenceBase(Delegate d)
+      {
+         return new CallOccurrenceBase(d, new List<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>>().AsReadOnly());
+      }
+   }
+
+   // todo rozró¿niaæ Action od func
+   public sealed class CallOccurrence<TP1, TRet> : CallOccurrenceBase
+   {
+      private CallOccurrence(Delegate @delegate, ReadOnlyCollection<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> filters) : base(@delegate, filters)
+      {}
+
+      public static implicit operator CallOccurrence<TP1, TRet>(Func<TP1, TRet> d)
+      {
+         return new CallOccurrence<TP1, TRet>(d, new List<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>>().AsReadOnly());
+      }
+      
+      public new CallOccurrence<TP1, TRet> AddFilter(Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
+      {
+         return new CallOccurrence<TP1, TRet>(
+            Delegate, 
             new List<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>>(_filters){ filter }.AsReadOnly());
       }
    }
 
    public static class CallOccurrenceExtension
    {
-      public static CallOccurrence WithArgs(this Delegate d, params object[] arguments)
+      public static CallOccurrence<TP1, TRet> WithArgs<TP1, TRet>(this Func<TP1, TRet> d, params object[] arguments)
       {
-         return WithArgs((CallOccurrence)d, arguments);
+         return WithArgs((CallOccurrence<TP1, TRet>)d, arguments);
       }
 
-      public static CallOccurrence WithArgs(this CallOccurrence callOccurrence, params object[] arguments)
+      public static CallOccurrence<TP1, TRet> WithArgs<TP1, TRet>(this CallOccurrence<TP1, TRet> callOccurrence, params object[] arguments)
       {
          return callOccurrence.AddFilter(reports => reports.Where(x => x.Arguments.SequenceEqual(arguments)));
       }
 
-      public static CallOccurrence SecondCall(this Delegate d)
+      //-----------------------
+
+      // todo not working with nullable types
+      // delegaty nie generyczne nie bêd¹ typowane bo nie op³aca siê ich otaczaæ w statyczn¹ otoczkê
+      public static CallOccurrence<TP1, TRet> WithArgs<TP1, TRet>(this Func<TP1, TRet> d, Func<TP1, bool> ds)
       {
-         return SecondCall((CallOccurrence)d);
+         return WithArgs((CallOccurrence<TP1, TRet>)d, ds);
       }
 
-      public static CallOccurrence SecondCall(this CallOccurrence callOccurrence)
+      public static CallOccurrence<TP1, TRet> WithArgs<TP1, TRet>(this CallOccurrence<TP1, TRet> d, Func<TP1, bool> ds)
+      {
+         return d.AddFilter(reports => reports.Where(x => (bool)ds.DynamicInvoke(x.Arguments)));
+      }
+
+      //-----------------------
+
+      public static CallOccurrence<TP1, TRet> SecondCall<TP1, TRet>(this Func<TP1, TRet> d)
+      {
+         return SecondCall((CallOccurrence<TP1, TRet>)d);
+      }
+
+      public static CallOccurrence<TP1, TRet> SecondCall<TP1, TRet>(this CallOccurrence<TP1, TRet> callOccurrence)
       {
          return callOccurrence.AddFilter(reports => reports.Skip(1));
+      }
+
+      //-------------------------
+
+      public static CallOccurrenceBase ThatThrows<TException>(this CallOccurrenceBase callOccurrence)
+      {
+         return callOccurrence.AddFilter(reports => reports.Where(x => x.Exception != null && x.Exception.GetType() == typeof(TException)));
+      }
+
+      public static CallOccurrence<TP1, TRet> ThatReturn<TP1, TRet>(this CallOccurrence<TP1, TRet> callOccurrence, TRet returnValue)
+      {
+         return callOccurrence.AddFilter(reports => reports.Where(x => x.ReturnValue.Equals(returnValue)));
       }
    }
 }
