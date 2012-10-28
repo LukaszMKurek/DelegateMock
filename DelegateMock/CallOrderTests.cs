@@ -112,11 +112,40 @@ namespace DelegateMock
          var fun1 = _.Func((int i) => i * 2);
          var fun2 = _.Func((int i) => i * 3);
 
-         fun2(1); // można doprecyzować że chodzi o first call
+         fun2(1);
          fun1(1);
          fun2(2);
 
          _.AssertThatWasCalledInOrder(fun1, fun2.WithArgs(2));
+      }
+
+      [Test]
+      public void T07_3()
+      {
+         var _ = Mock.New;
+         var fun1 = _.Func((int i) => i * 2);
+
+         fun1(2);
+         fun1(3);
+         fun1(2);
+
+         _.AssertThatWasCalledInOrder(fun1.WithArgs(2), fun1.WithArgs(3));
+         _.AssertThatWasCalledInOrder(fun1.WithArgs(3), fun1.WithArgs(2).SecondCall());
+         _.AssertThatWasCalledInOrder(fun1.WithArgs(3), fun1.WithArgs(3)); // todo źle
+      }
+
+      [Test]
+      public void T07_2()
+      {
+         var _ = Mock.New;
+         var fun1 = _.Func((int i) => i * 2);
+         var fun2 = _.Func((int i) => i * 3);
+
+         fun2(1);
+         fun1(1);
+         fun2(1);
+
+         _.AssertThatWasCalledInOrder(fun1, fun2.SecondCall().WithArgs(1));
       }
 
       [Test]

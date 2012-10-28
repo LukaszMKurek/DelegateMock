@@ -59,7 +59,7 @@ namespace DelegateMock.Implementation
       }
 
       //mo¿e linked list? // przerobiæ na kontunuacje
-      public ReadOnlyCollection<CallReport> GetCallReports(Delegate @delegate)
+      public IEnumerable<CallReport> GetCallReports(Delegate @delegate)
       {
          List<CallReport> list;
          if (_dic.TryGetValue(@delegate, out list))
@@ -93,7 +93,7 @@ namespace DelegateMock.Implementation
          {
             AssertThatWasCalled(call);
 
-            if (GetCallRaportsFilteredBy(previousCall).Single().Order > GetCallRaportsFilteredBy(call).Single().Order)
+            if (GetCallRaportsFilteredBy(previousCall).Single().Order >= GetCallRaportsFilteredBy(call).Single().Order)
                throw new Exception("Kolejnoœæ nie zosta³a spe³niona");
 
             previousCall = call;
@@ -147,6 +147,16 @@ namespace DelegateMock.Implementation
       public static CallOccurrence WithArgs(this CallOccurrence callOccurrence, params object[] arguments)
       {
          return callOccurrence.AddFilter(reports => reports.Where(x => x.Arguments.SequenceEqual(arguments)));
+      }
+
+      public static CallOccurrence SecondCall(this Delegate d)
+      {
+         return SecondCall((CallOccurrence)d);
+      }
+
+      public static CallOccurrence SecondCall(this CallOccurrence callOccurrence)
+      {
+         return callOccurrence.AddFilter(reports => reports.Skip(1));
       }
    }
 }
