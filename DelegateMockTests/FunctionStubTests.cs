@@ -5,7 +5,7 @@ using DelegateMock.FunctionStub;
 using DelegateMock.Implementation;
 using NUnit.Framework;
 
-namespace DelegateMock
+namespace DelegateMockTests
 {
    [TestFixture]
    public sealed class FunctionStubTests

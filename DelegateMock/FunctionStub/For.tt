@@ -1,0 +1,84 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="TemplateHelper.tt" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace DelegateMock.FunctionStub
+{
+   public static class For
+   {
+<# TemplateGeneratorHelper.ForEach((templateParametersWithComa, templateParametersWithBracked, parameters, parametersWithComa, parametersWithType, parametersWithTypeAndComa, parametersWithTypeA) => { #>
+      public static HolderFirst<#= templateParametersWithBracked #> Args<#= templateParametersWithBracked #>()
+      {
+         return new HolderFirst<#= templateParametersWithBracked #>(filter: (<#= parameters #>) => true);
+      }
+      
+      public static HolderFirst<#= templateParametersWithBracked #> Args<#= templateParametersWithBracked #>(Func<<#= templateParametersWithComa #>bool> filter)
+      {
+         return new HolderFirst<#= templateParametersWithBracked #>(filter: filter);
+      }
+
+      public static HolderFirst<#= templateParametersWithBracked #> Args<#= templateParametersWithBracked #>(<#= parametersWithTypeA #>)
+      {
+         return new HolderFirst<#= templateParametersWithBracked #>(filter: (<#= parameters #>) => new object[]{ p1 }.SequenceEqual(new object[]{ a1 }));
+      }
+
+      //-----
+      public static Node<<#= templateParametersWithComa #>TRet> Return<<#= templateParametersWithComa #>TRet>(this IHolderFirst<#= templateParametersWithBracked #> holder, TRet returnValue)
+      {
+         return new Node<<#= templateParametersWithComa #>TRet>(filter: holder.Filter, resultBuilder: (<#= parameters #>) => returnValue, previous: Node<<#= templateParametersWithComa #>TRet>.Empty);
+      }
+
+      public static Node<<#= templateParametersWithComa #>TRet> Return<<#= templateParametersWithComa #>TRet>(this IHolderNext<<#= templateParametersWithComa #>TRet> holder, TRet returnValue)
+      {
+         return new Node<<#= templateParametersWithComa #>TRet>(filter: holder.Filter, resultBuilder: (<#= parameters #>) => returnValue, previous: holder.Node);
+      }
+
+      public static Node<<#= templateParametersWithComa #>TRet> Call<<#= templateParametersWithComa #>TRet>(this IHolderNext<<#= templateParametersWithComa #>TRet> holder, Func<<#= templateParametersWithComa #>TRet> action)
+      {
+         return new Node<<#= templateParametersWithComa #>TRet>(filter: holder.Filter, resultBuilder: action, previous: holder.Node);
+      }
+
+      //-----
+      public static Node<<#= templateParametersWithComa #>TRet> ReturnSequence<<#= templateParametersWithComa #>TRet>(this IHolderFirst<#= templateParametersWithBracked #> holder, params TRet[] returnValues)
+      {
+         var sequence = new Sequence<TRet>(returnValues);
+         return new Node<<#= templateParametersWithComa #>TRet>(filter: holder.Filter, resultBuilder: (<#= parameters #>) => sequence.GetNext(), previous: Node<<#= templateParametersWithComa #>TRet>.Empty);
+      }
+
+      public static Node<<#= templateParametersWithComa #>TRet> ReturnSequence<<#= templateParametersWithComa #>TRet>(this IHolderNext<<#= templateParametersWithComa #>TRet> holder, params TRet[] returnValues)
+      {
+         var sequence = new Sequence<TRet>(returnValues);
+         return new Node<<#= templateParametersWithComa #>TRet>(filter: holder.Filter, resultBuilder: (<#= parameters #>) => sequence.GetNext(), previous: holder.Node);
+      }
+
+      //-----
+      public static HolderNext<<#= templateParametersWithComa #>TRet> ForArgs<<#= templateParametersWithComa #>TRet>(this Node<<#= templateParametersWithComa #>TRet> node, Func<<#= templateParametersWithComa #>bool> filter)
+      {
+         return new HolderNext<<#= templateParametersWithComa #>TRet>(filter: filter, node: node);
+      }
+
+      public static HolderNext<<#= templateParametersWithComa #>TRet> ForArgs<<#= templateParametersWithComa #>TRet>(this Node<<#= templateParametersWithComa #>TRet> node, <#= parametersWithTypeA #>)
+      {
+         return new HolderNext<<#= templateParametersWithComa #>TRet>(filter: (<#= parameters #>) => new object[]{ p1 }.SequenceEqual(new object[]{ a1 }), node: node);
+      }
+
+      public static Node<<#= templateParametersWithComa #>TRet> ForRest<<#= templateParametersWithComa #>TRet>(this Node<<#= templateParametersWithComa #>TRet> node, TRet returnValue)
+      {
+         return new Node<<#= templateParametersWithComa #>TRet>(filter: (<#= parameters #>) => true, resultBuilder: (<#= parameters #>) => returnValue, previous: node);
+      }
+
+      public static Node<<#= templateParametersWithComa #>TRet> ForRestCall<<#= templateParametersWithComa #>TRet>(this Node<<#= templateParametersWithComa #>TRet> node, Func<<#= templateParametersWithComa #>TRet> action)
+      {
+         return new Node<<#= templateParametersWithComa #>TRet>(filter: (<#= parameters #>) => true, resultBuilder: action, previous: node);
+      }
+      //*******************************************************************************************************************************************************************************************************************************************************
+
+<# }); #>
+   }
+}

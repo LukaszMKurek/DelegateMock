@@ -4,7 +4,7 @@ using System.Linq;
 using DelegateMock.Implementation;
 using NUnit.Framework;
 
-namespace DelegateMock
+namespace DelegateMockTests
 {
    [TestFixture]
    public sealed class CallOrderTests

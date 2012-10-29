@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace DelegateMock.FunctionStub
-{
-
+{/*
    // ReSharper disable TypeParameterCanBeVariant
    public interface IHolderFirst<TP1>
    {
@@ -89,10 +88,10 @@ namespace DelegateMock.FunctionStub
 
       public static Node<TP1, TRet> Empty = null;
 
-      /* public static implicit operator Func<TP1, TRet>(Node<TP1, TRet> node)
-      {
-         return node.AsFunc();
-      }*/
+      //public static implicit operator Func<TP1, TRet>(Node<TP1, TRet> node)
+      //{
+      //   return node.AsFunc();
+      //}
 
       public Func<TP1, TRet> AsFunc()
       {
@@ -188,26 +187,5 @@ namespace DelegateMock.FunctionStub
       {
          return new Node<TP1, TRet>(filter: p1 => true, resultBuilder: action, previous: node);
       }
-   }
-
-   public sealed class Sequence<TItem>
-   {
-      private readonly Stack<TItem> _items;
-
-      public Sequence(IEnumerable<TItem> items)
-      {
-         _items = new Stack<TItem>(items.Reverse());
-      }
-
-      public TItem GetNext()
-      {
-         lock (_items)
-         {
-            if (_items.Count == 0)
-               throw new Exception("No more elements to return.");
-
-            return _items.Pop();
-         }
-      }
-   }
+   }*/
 }

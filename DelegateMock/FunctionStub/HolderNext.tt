@@ -1,0 +1,36 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="TemplateHelper.tt" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace DelegateMock.FunctionStub
+{
+<# TemplateGeneratorHelper.ForEach((templateParametersWithComa, templateParametersWithBracked, parameters, parametersWithComa, parametersWithType, parametersWithTypeAndComa, parametersWithTypeA) => { #>
+   public sealed class HolderNext<<#= templateParametersWithComa #>TRet> : IHolderNext<<#= templateParametersWithComa #>TRet>
+   {
+      public HolderNext(Node<<#= templateParametersWithComa #>TRet> node, Func<<#= templateParametersWithComa #>bool> filter)
+      {
+         _node = node;
+         _filter = filter;
+      }
+
+      private readonly Node<<#= templateParametersWithComa #>TRet> _node;
+      Node<<#= templateParametersWithComa #>TRet> IHolderNext<<#= templateParametersWithComa #>TRet>.Node
+      {
+         get { return _node; }
+      }
+
+      private readonly Func<<#= templateParametersWithComa #>bool> _filter;
+      Func<<#= templateParametersWithComa #>bool> IHolderNext<<#= templateParametersWithComa #>TRet>.Filter
+      {
+         get { return _filter; }
+      }
+   }
+
+<# }); #>
+}

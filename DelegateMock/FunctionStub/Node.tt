@@ -1,0 +1,72 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="TemplateHelper.tt" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace DelegateMock.FunctionStub
+{
+<# TemplateGeneratorHelper.ForEach((templateParametersWithComa, templateParametersWithBracked, parameters, parametersWithComa, parametersWithType, parametersWithTypeAndComa, parametersWithTypeA) => { #>
+   public sealed class Node<<#= templateParametersWithComa #>TRet> : INode<<#= templateParametersWithComa #>TRet>
+   {
+      public Node(Node<<#= templateParametersWithComa #>TRet> previous, Func<<#= templateParametersWithComa #>bool> filter, Func<<#= templateParametersWithComa #>TRet> resultBuilder)
+      {
+         _previous = previous;
+         _filter = filter;
+         _resultBuilder = resultBuilder;
+      }
+
+      private readonly Node<<#= templateParametersWithComa #>TRet> _previous;
+      Node<<#= templateParametersWithComa #>TRet> INode<<#= templateParametersWithComa #>TRet>.Previous
+      {
+         get { return _previous; }
+      }
+
+      private readonly Func<<#= templateParametersWithComa #>bool> _filter;
+      Func<<#= templateParametersWithComa #>bool> INode<<#= templateParametersWithComa #>TRet>.Filter
+      {
+         get { return _filter; }
+      }
+
+      private readonly Func<<#= templateParametersWithComa #>TRet> _resultBuilder;
+      Func<<#= templateParametersWithComa #>TRet> INode<<#= templateParametersWithComa #>TRet>.ResultBuilder
+      {
+         get { return _resultBuilder; }
+      }
+
+      public static Node<<#= templateParametersWithComa #>TRet> Empty = null;
+
+      public Func<<#= templateParametersWithComa #>TRet> AsFunc()
+      {
+         return (<#= parameters #>) =>
+         {
+            TRet returnValue;
+            if (TryGetReturnValue(this, <#= parametersWithComa #>out returnValue))
+               return returnValue;
+
+            throw new Exception("No result to return.");
+         };
+      }
+
+      private static bool TryGetReturnValue(INode<<#= templateParametersWithComa #>TRet> node, <#= parametersWithTypeAndComa #>out TRet returnValue)
+      {
+         if (node.Previous != null && TryGetReturnValue(node.Previous, <#= parametersWithComa #>out returnValue))
+            return true;
+
+         if (node.Filter(<#= parameters #>))
+         {
+            returnValue = node.ResultBuilder(<#= parameters #>);
+            return true;
+         }
+
+         returnValue = default(TRet);
+         return false;
+      }
+   }
+
+<# }); #>
+}
