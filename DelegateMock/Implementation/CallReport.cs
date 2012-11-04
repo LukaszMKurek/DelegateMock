@@ -1,3 +1,4 @@
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Collections.Generic;
 using System;
@@ -14,6 +15,9 @@ namespace DelegateMock.Implementation
 
       public CallReport(object[] arguments, object returnValue, Exception exception, int order)
       {
+         Contract.Requires(arguments != null);
+         Contract.Requires(order >= 0);
+
          _arguments = arguments;
          _returnValue = returnValue;
          _exception = exception;
