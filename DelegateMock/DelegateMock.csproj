@@ -23,10 +23,10 @@
     <WarningLevel>4</WarningLevel>
     <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
-    <CodeContractsRuntimeThrowOnFailure>False</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
     <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
-    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
     <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
     <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
     <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
@@ -116,6 +116,11 @@
     <Compile Include="Implementation\ImmutableList.cs" />
     <Compile Include="Implementation\Mock.cs" />
     <Compile Include="Implementation\PublicCallAssertExtension.cs" />
+    <Compile Include="Implementation\TemplateHelper.cs">
+      <DependentUpon>TemplateHelper.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +155,10 @@
     <None Include="FunctionStub\IHolderFirst.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>IHolderFirst.cs</LastGenOutput>
+    </None>
+    <None Include="Implementation\TemplateHelper.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TemplateHelper.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

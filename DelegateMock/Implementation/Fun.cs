@@ -1,12 +1,12 @@
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Diagnostics.Contracts;
 using DelegateMock.FunctionStub;
 
 namespace DelegateMock.Implementation
 {
-   public static class Fun
+   /*public static class Fun
    {
       public static Func<TP1, TRet> Sequence<TP1, TRet>(params Func<TP1, TRet>[] funcSequence)
       {
@@ -19,6 +19,15 @@ namespace DelegateMock.Implementation
 
          var seq = new Sequence<Func<TP1, TRet>>(funcSequence);
          return p1 => seq.GetNext()(p1);
+      }
+   }*/
+
+   public static class aa
+   {
+      public static Func<int> CreateSequenc()
+      {
+         Contract.Ensures(Contract.Result<Func<int>>() != null);
+         return Fun.Sequence<int>(null);
       }
    }
 }
