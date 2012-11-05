@@ -21,13 +21,4 @@ namespace DelegateMock.Implementation
          return p1 => seq.GetNext()(p1);
       }
    }*/
-
-   public static class aa
-   {
-      public static Func<int> CreateSequenc()
-      {
-         Contract.Ensures(Contract.Result<Func<int>>() != null);
-         return Fun.Sequence<int>(null);
-      }
-   }
 }

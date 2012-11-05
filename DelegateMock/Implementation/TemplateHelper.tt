@@ -23,6 +23,15 @@ namespace DelegateMock.Implementation
          return (<#=_("p#")#>) => seq.GetNext()(<#=_("p#")#>);
       }
 
+      public static Action<#=_("TP#").CWrap("<", ">")#> Sequence<#=_("TP#").CWrap("<", ">")#>(params Action<#=_("TP#").CWrap("<", ">")#>[] funcSequence)
+      {
+         VerifiContracts(funcSequence);
+         Contract.Ensures(Contract.Result<Action<#=_("TP#").CWrap("<", ">")#>>() != null);
+
+         var seq = CreateSequence(funcSequence);
+         return (<#=_("p#")#>) => seq.GetNext()(<#=_("p#")#>);
+      }
+
 <#});#>
       private static Sequence<T> CreateSequence<T>(T[] funcSequence)
       {
