@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DelegateMock.FunctionStub;
 using DelegateMock.Implementation;
 using NUnit.Framework;
 
@@ -272,6 +273,20 @@ namespace DelegateMockTests
          fun1(2);
          
          _.AssertThatWasCalled(fun1.WithArgs(2).ThatReturn(5));
+      }
+
+      [Test]
+      public void T15()
+      {
+         var fun = Fun.Sequence((int i) => 1, i => 2, i => 7);
+
+         var r1 = fun(1);
+         var r2 = fun(1);
+         var r3 = fun(1);
+
+         Assert.That(r1, Is.EqualTo(1));
+         Assert.That(r2, Is.EqualTo(2));
+         Assert.That(r3, Is.EqualTo(7));
       }
    }
 }

@@ -7,15 +7,13 @@ namespace DelegateMock.Implementation
 {
    public struct CallReport
    {
-      private readonly object[] _arguments; // rozró¿niaæ wejœciowe i wyjœciowe
+      private readonly ImmutableArray<object> _arguments; // rozró¿niaæ wejœciowe i wyjœciowe
       private readonly object _returnValue;
       private readonly Exception _exception;
       private readonly int _order;
-      private static readonly object[] s_emptyArgumentArray = new object[0];
 
-      public CallReport(object[] arguments, object returnValue, Exception exception, int order)
+      public CallReport(ImmutableArray<object> arguments, object returnValue, Exception exception, int order)
       {
-         Contract.Requires(arguments != null);
          Contract.Requires(order >= 0);
 
          _arguments = arguments;
@@ -24,9 +22,9 @@ namespace DelegateMock.Implementation
          _order = order;
       }
 
-      public object[] Arguments
+      public ImmutableArray<object> Arguments
       {
-         get { return _arguments ?? s_emptyArgumentArray; }
+         get { return _arguments; }
       }
 
       public object ReturnValue
