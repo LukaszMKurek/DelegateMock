@@ -7,13 +7,6 @@ namespace DelegateMock.FunctionStub
 {
 // ReSharper disable TypeParameterCanBeVariant
 
-   public interface INode<TRet>
-   {
-      Node<TRet> Previous { get; }
-      Func<bool> Filter { get; }
-      Func<TRet> ResultBuilder { get; }
-   }
-
    public interface INode<TP1, TRet>
    {
       Node<TP1, TRet> Previous { get; }

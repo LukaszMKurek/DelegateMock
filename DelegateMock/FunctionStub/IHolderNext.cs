@@ -7,12 +7,6 @@ namespace DelegateMock.FunctionStub
 {
 // ReSharper disable TypeParameterCanBeVariant
 
-   public interface IHolderNext<TRet>
-   {
-      Node<TRet> Node { get; }
-      Func<bool> Filter { get; }
-   }
-
    public interface IHolderNext<TP1, TRet>
    {
       Node<TP1, TRet> Node { get; }

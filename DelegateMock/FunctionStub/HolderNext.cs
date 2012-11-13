@@ -5,27 +5,6 @@ using System.Linq;
 
 namespace DelegateMock.FunctionStub
 {
-   public sealed class HolderNext<TRet> : IHolderNext<TRet>
-   {
-      public HolderNext(Node<TRet> node, Func<bool> filter)
-      {
-         _node = node;
-         _filter = filter;
-      }
-
-      private readonly Node<TRet> _node;
-      Node<TRet> IHolderNext<TRet>.Node
-      {
-         get { return _node; }
-      }
-
-      private readonly Func<bool> _filter;
-      Func<bool> IHolderNext<TRet>.Filter
-      {
-         get { return _filter; }
-      }
-   }
-
    public sealed class HolderNext<TP1, TRet> : IHolderNext<TP1, TRet>
    {
       public HolderNext(Node<TP1, TRet> node, Func<TP1, bool> filter)

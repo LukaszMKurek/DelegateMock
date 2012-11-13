@@ -5,20 +5,6 @@ using System.Linq;
 
 namespace DelegateMock.FunctionStub
 {
-   public sealed class HolderFirst : IHolderFirst
-   {
-      public HolderFirst(Func<bool> filter)
-      {
-         _filter = filter;
-      }
-
-      private readonly Func<bool> _filter;
-      Func<bool> IHolderFirst.Filter
-      {
-         get { return _filter; }
-      }
-   }
-
    public sealed class HolderFirst<TP1> : IHolderFirst<TP1>
    {
       public HolderFirst(Func<TP1, bool> filter)

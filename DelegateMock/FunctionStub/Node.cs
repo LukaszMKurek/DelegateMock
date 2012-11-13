@@ -5,63 +5,6 @@ using System.Linq;
 
 namespace DelegateMock.FunctionStub
 {
-   public sealed class Node<TRet> : INode<TRet>
-   {
-      public Node(Node<TRet> previous, Func<bool> filter, Func<TRet> resultBuilder)
-      {
-         _previous = previous;
-         _filter = filter;
-         _resultBuilder = resultBuilder;
-      }
-
-      private readonly Node<TRet> _previous;
-      Node<TRet> INode<TRet>.Previous
-      {
-         get { return _previous; }
-      }
-
-      private readonly Func<bool> _filter;
-      Func<bool> INode<TRet>.Filter
-      {
-         get { return _filter; }
-      }
-
-      private readonly Func<TRet> _resultBuilder;
-      Func<TRet> INode<TRet>.ResultBuilder
-      {
-         get { return _resultBuilder; }
-      }
-
-      public static Node<TRet> Empty = null;
-
-      public Func<TRet> AsFunc()
-      {
-         return () =>
-         {
-            TRet returnValue;
-            if (TryGetReturnValue(this, out returnValue))
-               return returnValue;
-
-            throw new Exception("No result to return.");
-         };
-      }
-
-      private static bool TryGetReturnValue(INode<TRet> node, out TRet returnValue)
-      {
-         if (node.Previous != null && TryGetReturnValue(node.Previous, out returnValue))
-            return true;
-
-         if (node.Filter())
-         {
-            returnValue = node.ResultBuilder();
-            return true;
-         }
-
-         returnValue = default(TRet);
-         return false;
-      }
-   }
-
    public sealed class Node<TP1, TRet> : INode<TP1, TRet>
    {
       public Node(Node<TP1, TRet> previous, Func<TP1, bool> filter, Func<TP1, TRet> resultBuilder)
