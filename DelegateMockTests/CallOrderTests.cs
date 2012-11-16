@@ -14,7 +14,7 @@ namespace DelegateMockTests
       public void T01()
       {
          var _ = Mock.New;
-         var fun1 = _.Func((int i) => i*2);
+         var fun1 = _.Func((int i) => i * 2);
 
          fun1(1);
 

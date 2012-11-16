@@ -14,7 +14,7 @@ namespace DelegateMockTests
       public void T15()
       {
          const int value = 5;
-         var fun = For.Args<int>().Return(value).AsFunc();
+         var fun = For.Args<int>().Return(value).AsFunc(); // todo zrobić Func.Return() na dynamicu dzięki czemu na każdą dlegatę będzie można żutować
 
          int result = fun(1);
 
