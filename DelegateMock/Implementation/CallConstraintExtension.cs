@@ -5,10 +5,10 @@ using System;
 
 namespace DelegateMock.Implementation
 {
-   public static class CallAssertExtension // todo  explicit interface
+   public static class CallConstraintExtension // todo  explicit interface
    {
       [Pure]
-      public static List<CallReport> FilterCallRaport(this CallAssert self, IEnumerable<CallReport> callReports)
+      public static List<CallReport> FilterCallRaport(this CallConstraint self, IEnumerable<CallReport> callReports)
       {
          if (self == null)
             throw new ArgumentNullException("self");
@@ -31,22 +31,22 @@ namespace DelegateMock.Implementation
       }
 
       [Pure]
-      public static CallAssert AddFilter(this CallAssert self, Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
+      public static CallConstraint AddFilter(this CallConstraint self, Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
       {
          if (self == null)
             throw new ArgumentNullException("self");
          if (filter == null)
             throw new ArgumentNullException("filter");
-         Contract.Ensures(Contract.Result<CallAssert>() != null);
+         Contract.Ensures(Contract.Result<CallConstraint>() != null);
          
          var filters = self.Filters.Add(filter);
          Contract.Assume(filters.Length > 0 && Contract.ForAll(filters, f => f != null));
          
-         return new CallAssert(self.Delegate, filters);
+         return new CallConstraint(self.Delegate, filters);
       }
 
       [Pure]
-      public static CallAssert<TP1, TRet> AddFilter<TP1, TRet>(this CallAssert<TP1, TRet> self, Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
+      public static FuncCallConstraint<TP1, TRet> AddFilter<TP1, TRet>(this FuncCallConstraint<TP1, TRet> self, Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
       {
          if (self == null)
             throw new ArgumentNullException("self");
@@ -56,7 +56,21 @@ namespace DelegateMock.Implementation
          var filters = self.Filters.Add(filter);
          Contract.Assume(filters.Length > 0 && filters.All(f => f != null));
 
-         return new CallAssert<TP1, TRet>(self.Delegate, filters);
+         return new FuncCallConstraint<TP1, TRet>(self.Delegate, filters);
+      }
+
+      [Pure]
+      public static ActionCallConstraint<TP1> AddFilter<TP1>(this ActionCallConstraint<TP1> self, Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
+      {
+         if (self == null)
+            throw new ArgumentNullException("self");
+         if (filter == null)
+            throw new ArgumentNullException("filter");
+
+         var filters = self.Filters.Add(filter);
+         Contract.Assume(filters.Length > 0 && filters.All(f => f != null));
+
+         return new ActionCallConstraint<TP1>(self.Delegate, filters);
       }
    }
 }

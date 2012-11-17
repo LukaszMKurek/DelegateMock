@@ -2,7 +2,6 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Collections.Generic;
 using System;
-using DelegateMock.FunctionStub;
 
 namespace DelegateMock.Implementation
 {
@@ -53,23 +52,23 @@ namespace DelegateMock.Implementation
       }
 
       // na extension przerobiæ
-      public void AssertThatWasCalled(CallAssert callAssert)
+      public void AssertThatWasCalled(CallConstraint callConstraint)
       {
-         if (callAssert == null)
-            throw new ArgumentNullException("callAssert");
+         if (callConstraint == null)
+            throw new ArgumentNullException("callConstraint");
 
-         if (GetCallRaportsFilteredBy(callAssert).Count == 0)
+         if (GetCallRaportsFilteredBy(callConstraint).Count == 0)
             throw new Exception("Funkcja nie by³a wo³ana");
       }
       
-      private List<CallReport> GetCallRaportsFilteredBy(CallAssert callAssert)
+      private List<CallReport> GetCallRaportsFilteredBy(CallConstraint callConstraint)
       {
-         return callAssert.FilterCallRaport(GetCallReports(callAssert.Delegate));
+         return callConstraint.FilterCallRaport(GetCallReports(callConstraint.Delegate));
       }
 
-      private CallReport GetSingleCallReport(CallAssert callAssert)
+      private CallReport GetSingleCallReport(CallConstraint callConstraint)
       {
-         List<CallReport> callRaports = GetCallRaportsFilteredBy(callAssert);
+         List<CallReport> callRaports = GetCallRaportsFilteredBy(callConstraint);
          if (callRaports.Count == 0) // todo eby wyj¹tek by³ wyra¿ny wyprowadzic go delegat¹ mo¿e
             throw new Exception("Funkcja nie by³a wo³ana");
 
@@ -77,71 +76,28 @@ namespace DelegateMock.Implementation
       }
 
       // na extension przerobiæ
-      public void AssertThatWasCalledInOrder(params CallAssert[] callAsserts)
+      public void AssertThatWasCalledInOrder(params CallConstraint[] callConstraints)
       {
-         if (callAsserts == null)
-            throw new ArgumentNullException("callAsserts");
-         if (callAsserts.Length == 0)
+         if (callConstraints == null)
+            throw new ArgumentNullException("callConstraints");
+         if (callConstraints.Length == 0)
             throw new Exception("Z³e u¿ycie.");
-         Contract.Requires(Contract.ForAll(callAsserts, call => call != null));
+         Contract.Requires(Contract.ForAll(callConstraints, call => call != null));
 
-         CallAssert previousCall = callAsserts[0];
+         CallConstraint previousCall = callConstraints[0];
          int previousOrder = GetSingleCallReport(previousCall).Order;
          
-         foreach (var callAssert in callAsserts.Skip(1))
+         foreach (var callConstraint in callConstraints.Skip(1))
          {
-            Contract.Assume(callAssert != null); // todo
-            //AssertThatWasCalled(callAssert);
+            Contract.Assume(callConstraint != null); // todo
+            //AssertThatWasCalled(CallConstraint);
 
-            int currentOrder = GetSingleCallReport(callAssert).Order;
+            int currentOrder = GetSingleCallReport(callConstraint).Order;
             if (previousOrder + 1 != currentOrder)
                throw new Exception("Kolejnoœæ nie zosta³a spe³niona");
 
             previousOrder = currentOrder;
          }
-      }
-   }
-
-   public static class MockExtension
-   {
-      public static Func<TP1, TRet> Func<TP1, TRet>(this Mock self, Node<TP1, TRet> node)
-      {
-         if (node == null)
-            throw new ArgumentNullException("node");
-
-         return self.Func(node.AsFunc());
-      }
-
-      public static Func<TP1, TRet> Func<TP1, TRet>(this Mock self, Func<TP1, TRet> func)
-      {
-         if (func == null)
-            throw new ArgumentNullException("func");
-
-         Func<TP1, TRet> wrapDelegateTemp = null;
-         Func<TP1, TRet> wrapDelegate = p1 =>
-         {
-            TRet returnValue = default(TRet);
-            Exception exception = null;
-
-            try
-            {
-               returnValue = func(p1);
-               return returnValue;
-            }
-            catch (Exception ex)
-            {
-               exception = ex;
-               throw;
-            }
-            finally
-            {
-               // ReSharper disable AccessToModifiedClosure
-               self.ReportCall(wrapDelegateTemp, ImmutableArray<object>.New(p1), returnValue, exception);
-               // ReSharper restore AccessToModifiedClosure
-            }
-         };
-         wrapDelegateTemp = wrapDelegate;
-         return wrapDelegate;
       }
    }
 }

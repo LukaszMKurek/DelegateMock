@@ -110,12 +110,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TemplateHelper.tt</DependentUpon>
     </Compile>
-    <Compile Include="Implementation\CallAssert.cs" />
-    <Compile Include="Implementation\CallAssertExtension.cs" />
+    <Compile Include="Implementation\ActionCallConstraint.cs" />
+    <Compile Include="Implementation\CallConstraint.cs" />
+    <Compile Include="Implementation\CallConstraintExtension.cs" />
     <Compile Include="Implementation\CallReport.cs" />
+    <Compile Include="Implementation\FuncCallConstraint.cs" />
     <Compile Include="Implementation\ImmutableList.cs" />
     <Compile Include="Implementation\Mock.cs" />
-    <Compile Include="Implementation\PublicCallAssertExtension.cs" />
+    <Compile Include="Implementation\MockExtension.cs" />
+    <Compile Include="Implementation\PublicFuncCallConstraintExtension.cs" />
     <Compile Include="Implementation\Fun.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

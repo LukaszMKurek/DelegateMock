@@ -5,38 +5,13 @@ using System;
 
 namespace DelegateMock.Implementation
 {
-   // todo rozró¿niaæ Action od func
-   public sealed class CallAssert<TP1, TRet> : CallAssert
-   {
-      public CallAssert(Delegate @delegate, ImmutableList<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> filters)
-         : base(@delegate, filters)
-      {
-         if (@delegate == null)
-            throw new ArgumentNullException("delegate");
-         if (filters == null)
-            throw new ArgumentNullException("filters");
-         //Contract.Requires(filters.Length == 0 || Contract.ForAll(filters, filter => filter != null));
-         Contract.Ensures(Filters.SequenceEqual(filters));
-         Contract.Ensures(Delegate == @delegate);
-      }
-
-      [Pure]
-      public static implicit operator CallAssert<TP1, TRet>(Func<TP1, TRet> func)
-      {
-         if (func == null)
-            throw new ArgumentNullException("func");
-
-         return new CallAssert<TP1, TRet>(func, EmptyFilters);
-      }
-   }
-
    // for non generic delegates
-   public class CallAssert
+   public class CallConstraint
    {
       private readonly Delegate _delegate;
       private readonly ImmutableList<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> _filters;
 
-      public static ImmutableList<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> EmptyFilters
+      protected static ImmutableList<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> EmptyFilters
       {
          get
          {
@@ -53,7 +28,7 @@ namespace DelegateMock.Implementation
          }
       }
 
-      public CallAssert(Delegate @delegate, ImmutableList<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> filters)
+      public CallConstraint(Delegate @delegate, ImmutableList<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> filters)
       {
          if (@delegate == null)
             throw new ArgumentNullException("delegate");
@@ -67,6 +42,7 @@ namespace DelegateMock.Implementation
          _filters = filters;
          Contract.Assume(Filters.SequenceEqual(filters));
       }
+
       public Delegate Delegate // todo hide by explicit interface
       {
          get
@@ -90,14 +66,14 @@ namespace DelegateMock.Implementation
       }
 
       [Pure]
-      public static implicit operator CallAssert(Delegate @delegate)
+      public static implicit operator CallConstraint(Delegate @delegate)
       {
          if (@delegate == null)
             throw new ArgumentNullException("delegate");
-         Contract.Ensures(Contract.Result<CallAssert>() != null);
-         Contract.Ensures(Contract.Result<CallAssert>().Delegate == @delegate);
+         Contract.Ensures(Contract.Result<CallConstraint>() != null);
+         Contract.Ensures(Contract.Result<CallConstraint>().Delegate == @delegate);
 
-         return new CallAssert(@delegate, EmptyFilters);
+         return new CallConstraint(@delegate, EmptyFilters);
       }
    }
 }
