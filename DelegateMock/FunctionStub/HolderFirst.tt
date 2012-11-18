@@ -1,29 +1,26 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Collections.Generic" #>
-<#@ output extension=".cs" #>
-<#@ include file="TemplateHelper.tt" #>
+﻿<#@ template debug="false" language="C#" #>
+<#@ assembly name="$(SolutionDir)\TemplateHelpers\bin\TemplateHelpers.dll" #>
+<#@ import namespace="TemplateHelpers" #>
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DelegateMock.FunctionStub
 {
-<# TemplateGeneratorHelper.ForEach((templateParametersWithComa, templateParametersWithBracked, parameters, parametersWithComa, parametersWithType, parametersWithTypeAndComa, parametersWithTypeA) => { #>
-   public sealed class HolderFirst<#= templateParametersWithBracked #> : IHolderFirst<#= templateParametersWithBracked #>
+<#T4Helper.ForEachInRange(0, 16, (i, _) => {#>
+   public sealed class HolderFirst<#=_("<", "TP#", ">")#> : IHolderFirst<#=_("<", "TP#", ">")#>
    {
-      public HolderFirst(Func<<#= templateParametersWithComa #>bool> filter)
+      public HolderFirst(Func<<#=_("TP#", ", ")#>bool> filter)
       {
          _filter = filter;
       }
 
-      private readonly Func<<#= templateParametersWithComa #>bool> _filter;
-      Func<<#= templateParametersWithComa #>bool> IHolderFirst<#= templateParametersWithBracked #>.Filter
+      private readonly Func<<#=_("TP#", ", ")#>bool> _filter;
+      Func<<#=_("TP#", ", ")#>bool> IHolderFirst<#=_("<", "TP#", ">")#>.Filter
       {
          get { return _filter; }
       }
    }
 
-<# }); #>
+<#});#>
 }

@@ -1,6 +1,4 @@
-﻿<#@ assembly name="System.Core" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Collections.Generic" #>
+﻿<#@ template debug="false" language="C#" #>
 <#@ assembly name="$(SolutionDir)\TemplateHelpers\bin\TemplateHelpers.dll" #>
 <#@ import namespace="TemplateHelpers" #>
 using System;
@@ -11,21 +9,22 @@ using DelegateMock.FunctionStub;
 
 namespace DelegateMock.Implementation
 {
+// ReSharper disable RedundantLambdaSignatureParentheses
    public static class Fun
    {
-<#T4Helper.From0To16(_ => {#>
-      public static Func<<#=_("TP#").CAdd(", ")#>TRet> Sequence<<#=_("TP#").CAdd(", ")#>TRet>(params Func<<#=_("TP#").CAdd(", ")#>TRet>[] funcSequence)
+<#T4Helper.ForEachInRange(0, 16, (i, _) => {#>
+      public static Func<<#=_("TP#", ", ")#>TRet> Sequence<<#=_("TP#", ", ")#>TRet>(params Func<<#=_("TP#", ", ")#>TRet>[] funcSequence)
       {
-         Contract.Ensures(Contract.Result<Func<<#=_("TP#").CAdd(", ")#>TRet>>() != null);
+         Contract.Ensures(Contract.Result<Func<<#=_("TP#", ", ")#>TRet>>() != null);
 			VerifiContracts(funcSequence);
 
          var seq = CreateSequence(funcSequence);
          return (<#=_("p#")#>) => seq.GetNext()(<#=_("p#")#>);
       }
-
-      public static Action<#=_("TP#").CWrap("<", ">")#> Sequence<#=_("TP#").CWrap("<", ">")#>(params Action<#=_("TP#").CWrap("<", ">")#>[] funcSequence)
+      
+      public static Action<#=_("<", "TP#", ">")#> Sequence<#=_("<", "TP#", ">")#>(params Action<#=_("<", "TP#", ">")#>[] funcSequence)
       {
-         Contract.Ensures(Contract.Result<Action<#=_("TP#").CWrap("<", ">")#>>() != null);
+         Contract.Ensures(Contract.Result<Action<#=_("<", "TP#", ">")#>>() != null);
 			VerifiContracts(funcSequence);
 
          var seq = CreateSequence(funcSequence);
@@ -50,4 +49,5 @@ namespace DelegateMock.Implementation
          //Contract.EndContractBlock();
       }
    }
+// ReSharper enable RedundantLambdaSignatureParentheses
 }

@@ -105,11 +105,6 @@
     </Compile>
     <Compile Include="FunctionStub\Sequence.cs" />
     <Compile Include="FunctionStub\Stub.cs" />
-    <Compile Include="FunctionStub\TemplateHelper.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TemplateHelper.tt</DependentUpon>
-    </Compile>
     <Compile Include="Implementation\ActionCallConstraint.cs" />
     <Compile Include="Implementation\CallConstraint.cs" />
     <Compile Include="Implementation\CallConstraintExtension.cs" />
@@ -117,7 +112,15 @@
     <Compile Include="Implementation\FuncCallConstraint.cs" />
     <Compile Include="Implementation\ImmutableList.cs" />
     <Compile Include="Implementation\Mock.cs" />
-    <Compile Include="Implementation\MockExtension.cs" />
+    <None Include="Implementation\MockExtension.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MockExtension.cs</LastGenOutput>
+    </None>
+    <Compile Include="Implementation\MockExtension.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MockExtension.tt</DependentUpon>
+    </Compile>
     <Compile Include="Implementation\PublicFuncCallConstraintExtension.cs" />
     <Compile Include="Implementation\Fun.cs">
       <AutoGen>True</AutoGen>
@@ -154,10 +157,6 @@
     <None Include="FunctionStub\Node.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Node.cs</LastGenOutput>
-    </None>
-    <None Include="FunctionStub\TemplateHelper.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TemplateHelper.cs</LastGenOutput>
     </None>
     <None Include="Implementation\Fun.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

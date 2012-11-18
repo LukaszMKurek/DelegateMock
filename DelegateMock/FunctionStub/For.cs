@@ -1,12 +1,25 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DelegateMock.FunctionStub
 {
+// ReSharper disable RedundantLambdaSignatureParentheses
    public static class For
    {
+      public static HolderFirst Args()
+      {
+         return new HolderFirst(filter: () => true);
+      }
+
+      public static Node<TRet> ReturnSequence<TRet>(this IHolderFirst holder, params TRet[] returnValues)
+      {
+         var sequence = new Sequence<TRet>(returnValues);
+         return new Node<TRet>(filter: holder.Filter, resultBuilder: sequence.GetNext, previous: Node<TRet>.Empty);
+      }
+
+      //*******************************************************************************************************************************************************************************************************************************************************
+
       public static HolderFirst<TP1> Args<TP1>()
       {
          return new HolderFirst<TP1>(filter: (p1) => true);
@@ -1064,4 +1077,5 @@ namespace DelegateMock.FunctionStub
       //*******************************************************************************************************************************************************************************************************************************************************
 
    }
+// ReSharper enable RedundantLambdaSignatureParentheses
 }

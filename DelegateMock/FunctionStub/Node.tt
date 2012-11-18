@@ -1,72 +1,72 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Collections.Generic" #>
-<#@ output extension=".cs" #>
-<#@ include file="TemplateHelper.tt" #>
+﻿<#@ template debug="false" language="C#" #>
+<#@ assembly name="$(SolutionDir)\TemplateHelpers\bin\TemplateHelpers.dll" #>
+<#@ import namespace="TemplateHelpers" #>
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DelegateMock.FunctionStub
 {
-<# TemplateGeneratorHelper.ForEach((templateParametersWithComa, templateParametersWithBracked, parameters, parametersWithComa, parametersWithType, parametersWithTypeAndComa, parametersWithTypeA) => { #>
-   public sealed class Node<<#= templateParametersWithComa #>TRet> : INode<<#= templateParametersWithComa #>TRet>
+// ReSharper disable RedundantLambdaSignatureParentheses
+<#T4Helper.ForEachInRange(0, 16, (i, _) => {#>
+   public sealed class Node<<#=_("TP#", ", ")#>TRet> : INode<<#=_("TP#", ", ")#>TRet>
    {
-      public Node(Node<<#= templateParametersWithComa #>TRet> previous, Func<<#= templateParametersWithComa #>bool> filter, Func<<#= templateParametersWithComa #>TRet> resultBuilder)
+      public Node(Node<<#=_("TP#", ", ")#>TRet> previous, Func<<#=_("TP#", ", ")#>bool> filter, Func<<#=_("TP#", ", ")#>TRet> resultBuilder)
       {
          _previous = previous;
          _filter = filter;
          _resultBuilder = resultBuilder;
       }
 
-      private readonly Node<<#= templateParametersWithComa #>TRet> _previous;
-      Node<<#= templateParametersWithComa #>TRet> INode<<#= templateParametersWithComa #>TRet>.Previous
+      private readonly Node<<#=_("TP#", ", ")#>TRet> _previous;
+      Node<<#=_("TP#", ", ")#>TRet> INode<<#=_("TP#", ", ")#>TRet>.Previous
       {
          get { return _previous; }
       }
 
-      private readonly Func<<#= templateParametersWithComa #>bool> _filter;
-      Func<<#= templateParametersWithComa #>bool> INode<<#= templateParametersWithComa #>TRet>.Filter
+      private readonly Func<<#=_("TP#", ", ")#>bool> _filter;
+      Func<<#=_("TP#", ", ")#>bool> INode<<#=_("TP#", ", ")#>TRet>.Filter
       {
          get { return _filter; }
       }
 
-      private readonly Func<<#= templateParametersWithComa #>TRet> _resultBuilder;
-      Func<<#= templateParametersWithComa #>TRet> INode<<#= templateParametersWithComa #>TRet>.ResultBuilder
+      private readonly Func<<#=_("TP#", ", ")#>TRet> _resultBuilder;
+      Func<<#=_("TP#", ", ")#>TRet> INode<<#=_("TP#", ", ")#>TRet>.ResultBuilder
       {
          get { return _resultBuilder; }
       }
 
-      public static Node<<#= templateParametersWithComa #>TRet> Empty = null;
+      public static readonly Node<<#=_("TP#", ", ")#>TRet> Empty = null;
 
-      public Func<<#= templateParametersWithComa #>TRet> AsFunc()
+      public Func<<#=_("TP#", ", ")#>TRet> AsFunc()
       {
-         return (<#= parameters #>) =>
+         return (<#=_("p#")#>) =>
          {
             TRet returnValue;
-            if (TryGetReturnValue(this, <#= parametersWithComa #>out returnValue))
+            if (TryGetReturnValue(this, <#=_("p#", ", ")#>out returnValue))
                return returnValue;
 
             throw new Exception("No result to return.");
          };
       }
 
-      private static bool TryGetReturnValue(INode<<#= templateParametersWithComa #>TRet> node, <#= parametersWithTypeAndComa #>out TRet returnValue)
+      private static bool TryGetReturnValue(INode<<#=_("TP#", ", ")#>TRet> node, <#=_("TP# p#", ", ")#>out TRet returnValue)
       {
-         if (node.Previous != null && TryGetReturnValue(node.Previous, <#= parametersWithComa #>out returnValue))
+         if (node.Previous != null && TryGetReturnValue(node.Previous, <#=_("p#", ", ")#>out returnValue))
             return true;
 
-         if (node.Filter(<#= parameters #>))
+         if (node.Filter(<#=_("p#")#>))
          {
-            returnValue = node.ResultBuilder(<#= parameters #>);
+            returnValue = node.ResultBuilder(<#=_("p#")#>);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
       }
    }
 
-<# }); #>
+<#});#>
+// ReSharper enable RedundantLambdaSignatureParentheses
 }

@@ -1,10 +1,68 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DelegateMock.FunctionStub
 {
+// ReSharper disable RedundantLambdaSignatureParentheses
+   public sealed class Node<TRet> : INode<TRet>
+   {
+      public Node(Node<TRet> previous, Func<bool> filter, Func<TRet> resultBuilder)
+      {
+         _previous = previous;
+         _filter = filter;
+         _resultBuilder = resultBuilder;
+      }
+
+      private readonly Node<TRet> _previous;
+      Node<TRet> INode<TRet>.Previous
+      {
+         get { return _previous; }
+      }
+
+      private readonly Func<bool> _filter;
+      Func<bool> INode<TRet>.Filter
+      {
+         get { return _filter; }
+      }
+
+      private readonly Func<TRet> _resultBuilder;
+      Func<TRet> INode<TRet>.ResultBuilder
+      {
+         get { return _resultBuilder; }
+      }
+
+      public static readonly Node<TRet> Empty = null;
+
+      public Func<TRet> AsFunc()
+      {
+         return () =>
+         {
+            TRet returnValue;
+            if (TryGetReturnValue(this, out returnValue))
+               return returnValue;
+
+            throw new Exception("No result to return.");
+         };
+      }
+
+      private static bool TryGetReturnValue(INode<TRet> node, out TRet returnValue)
+      {
+         if (node.Previous != null && TryGetReturnValue(node.Previous, out returnValue))
+            return true;
+
+         if (node.Filter())
+         {
+            returnValue = node.ResultBuilder();
+            return true;
+         }
+
+
+         returnValue = default(TRet);
+         return false;
+      }
+   }
+
    public sealed class Node<TP1, TRet> : INode<TP1, TRet>
    {
       public Node(Node<TP1, TRet> previous, Func<TP1, bool> filter, Func<TP1, TRet> resultBuilder)
@@ -32,7 +90,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TRet> Empty = null;
+      public static readonly Node<TP1, TRet> Empty = null;
 
       public Func<TP1, TRet> AsFunc()
       {
@@ -56,6 +114,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -89,7 +148,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TRet> Empty = null;
 
       public Func<TP1, TP2, TRet> AsFunc()
       {
@@ -113,6 +172,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -146,7 +206,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TRet> AsFunc()
       {
@@ -170,6 +230,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -203,7 +264,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TRet> AsFunc()
       {
@@ -227,6 +288,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3, p4);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -260,7 +322,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TP5, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TP5, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TP5, TRet> AsFunc()
       {
@@ -284,6 +346,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3, p4, p5);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -317,7 +380,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TP5, TP6, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TP5, TP6, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TP5, TP6, TRet> AsFunc()
       {
@@ -341,6 +404,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3, p4, p5, p6);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -374,7 +438,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TRet> AsFunc()
       {
@@ -398,6 +462,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3, p4, p5, p6, p7);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -431,7 +496,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TRet> AsFunc()
       {
@@ -455,6 +520,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3, p4, p5, p6, p7, p8);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -488,7 +554,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TRet> AsFunc()
       {
@@ -512,6 +578,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3, p4, p5, p6, p7, p8, p9);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -545,7 +612,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TRet> AsFunc()
       {
@@ -569,6 +636,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -602,7 +670,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TRet> AsFunc()
       {
@@ -626,6 +694,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -659,7 +728,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TRet> AsFunc()
       {
@@ -683,6 +752,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -716,7 +786,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TRet> AsFunc()
       {
@@ -740,6 +810,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -773,7 +844,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TRet> AsFunc()
       {
@@ -797,6 +868,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -830,7 +902,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15, TRet> AsFunc()
       {
@@ -854,6 +926,7 @@ namespace DelegateMock.FunctionStub
             returnValue = node.ResultBuilder(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15);
             return true;
          }
+
 
          returnValue = default(TRet);
          return false;
@@ -887,7 +960,7 @@ namespace DelegateMock.FunctionStub
          get { return _resultBuilder; }
       }
 
-      public static Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15, TP16, TRet> Empty = null;
+      public static readonly Node<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15, TP16, TRet> Empty = null;
 
       public Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15, TP16, TRet> AsFunc()
       {
@@ -912,9 +985,11 @@ namespace DelegateMock.FunctionStub
             return true;
          }
 
+
          returnValue = default(TRet);
          return false;
       }
    }
 
+// ReSharper enable RedundantLambdaSignatureParentheses
 }

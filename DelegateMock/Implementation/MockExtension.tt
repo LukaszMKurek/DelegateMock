@@ -1,0 +1,91 @@
+<#@ template debug="false" language="C#" #>
+<#@ assembly name="$(SolutionDir)\TemplateHelpers\bin\TemplateHelpers.dll" #>
+<#@ import namespace="TemplateHelpers" #>
+using System.Linq;
+using System.Collections.Generic;
+using System;
+using DelegateMock.FunctionStub;
+
+namespace DelegateMock.Implementation
+{
+// ReSharper disable RedundantLambdaSignatureParentheses
+   public static class MockExtension
+   {
+<#T4Helper.ForEachInRange(0, 16, (i, _) => {#>
+      public static Func<<#=_("TP#", ", ")#>TRet> Func<<#=_("TP#", ", ")#>TRet>(this Mock self, Node<<#=_("TP#", ", ")#>TRet> node)
+      {
+         if (node == null)
+            throw new ArgumentNullException("node");
+
+         return self.Func(node.AsFunc());
+      }
+
+      public static Func<<#=_("TP#", ", ")#>TRet> Func<<#=_("TP#", ", ")#>TRet>(this Mock self, Func<<#=_("TP#", ", ")#>TRet> func)
+      {
+         if (func == null)
+            throw new ArgumentNullException("func");
+
+         Func<<#=_("TP#", ", ")#>TRet> wrapDelegateTemp = null;
+         Func<<#=_("TP#", ", ")#>TRet> wrapDelegate = (<#=_("p#")#>) =>
+         {
+            TRet returnValue = default(TRet);
+            Exception exception = null;
+
+            try
+            {
+               returnValue = func(<#=_("p#")#>);
+               return returnValue;
+            }
+            catch (Exception ex)
+            {
+               exception = ex;
+               throw;
+            }
+            finally
+            {
+               // ReSharper disable AccessToModifiedClosure
+               self.ReportCall(wrapDelegateTemp, ImmutableArray<object>.New(<#=_("p#")#>), returnValue, exception);
+               // ReSharper restore AccessToModifiedClosure
+            }
+         };
+
+         wrapDelegateTemp = wrapDelegate;
+         return wrapDelegate;
+      }
+
+      public static Action<#=_("<", "TP#", ">")#> Action<#=_("<", "TP#", ">")#>(this Mock self, Action<#=_("<", "TP#", ">")#> action)
+      {
+         if (action == null)
+            throw new ArgumentNullException("action");
+
+         Action<#=_("<", "TP#", ">")#> wrapDelegateTemp = null;
+         Action<#=_("<", "TP#", ">")#> wrapDelegate = (<#=_("p#")#>) =>
+         {
+            Exception exception = null;
+
+            try
+            {
+               action(<#=_("p#")#>);
+            }
+            catch (Exception ex)
+            {
+               exception = ex;
+               throw;
+            }
+            finally
+            {
+               // ReSharper disable AccessToModifiedClosure
+               self.ReportCall(wrapDelegateTemp, ImmutableArray<object>.New(<#=_("p#")#>), null, exception);
+               // ReSharper restore AccessToModifiedClosure
+            }
+         };
+
+         wrapDelegateTemp = wrapDelegate;
+         return wrapDelegate;
+      }
+      //-----------------------------------------------------------------------------------------------------------
+
+<#});#>
+   }
+// ReSharper enable RedundantLambdaSignatureParentheses
+}

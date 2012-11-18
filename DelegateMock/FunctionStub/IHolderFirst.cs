@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +6,11 @@ namespace DelegateMock.FunctionStub
 {
 // ReSharper disable TypeParameterCanBeVariant
 
+   public interface IHolderFirst
+   {
+      Func<bool> Filter { get; }
+   }
+   
    public interface IHolderFirst<TP1>
    {
       Func<TP1, bool> Filter { get; }

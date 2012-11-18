@@ -6,6 +6,7 @@ using DelegateMock.FunctionStub;
 
 namespace DelegateMock.Implementation
 {
+// ReSharper disable RedundantLambdaSignatureParentheses
    public static class Fun
    {
       public static Func<TRet> Sequence<TRet>(params Func<TRet>[] funcSequence)
@@ -16,7 +17,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return () => seq.GetNext()();
       }
-
+      
       public static Action Sequence(params Action[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action>() != null);
@@ -34,7 +35,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1) => seq.GetNext()(p1);
       }
-
+      
       public static Action<TP1> Sequence<TP1>(params Action<TP1>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1>>() != null);
@@ -52,7 +53,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2) => seq.GetNext()(p1, p2);
       }
-
+      
       public static Action<TP1, TP2> Sequence<TP1, TP2>(params Action<TP1, TP2>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2>>() != null);
@@ -70,7 +71,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3) => seq.GetNext()(p1, p2, p3);
       }
-
+      
       public static Action<TP1, TP2, TP3> Sequence<TP1, TP2, TP3>(params Action<TP1, TP2, TP3>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3>>() != null);
@@ -88,7 +89,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4) => seq.GetNext()(p1, p2, p3, p4);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4> Sequence<TP1, TP2, TP3, TP4>(params Action<TP1, TP2, TP3, TP4>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4>>() != null);
@@ -106,7 +107,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4, p5) => seq.GetNext()(p1, p2, p3, p4, p5);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4, TP5> Sequence<TP1, TP2, TP3, TP4, TP5>(params Action<TP1, TP2, TP3, TP4, TP5>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4, TP5>>() != null);
@@ -124,7 +125,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4, p5, p6) => seq.GetNext()(p1, p2, p3, p4, p5, p6);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4, TP5, TP6> Sequence<TP1, TP2, TP3, TP4, TP5, TP6>(params Action<TP1, TP2, TP3, TP4, TP5, TP6>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4, TP5, TP6>>() != null);
@@ -142,7 +143,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4, p5, p6, p7) => seq.GetNext()(p1, p2, p3, p4, p5, p6, p7);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7> Sequence<TP1, TP2, TP3, TP4, TP5, TP6, TP7>(params Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7>>() != null);
@@ -160,7 +161,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4, p5, p6, p7, p8) => seq.GetNext()(p1, p2, p3, p4, p5, p6, p7, p8);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8> Sequence<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8>(params Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8>>() != null);
@@ -178,7 +179,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4, p5, p6, p7, p8, p9) => seq.GetNext()(p1, p2, p3, p4, p5, p6, p7, p8, p9);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9> Sequence<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9>(params Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9>>() != null);
@@ -196,7 +197,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => seq.GetNext()(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10> Sequence<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10>(params Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10>>() != null);
@@ -214,7 +215,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) => seq.GetNext()(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11> Sequence<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11>(params Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11>>() != null);
@@ -232,7 +233,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) => seq.GetNext()(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12> Sequence<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12>(params Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12>>() != null);
@@ -250,7 +251,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13) => seq.GetNext()(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13> Sequence<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13>(params Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13>>() != null);
@@ -268,7 +269,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) => seq.GetNext()(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14> Sequence<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14>(params Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14>>() != null);
@@ -286,7 +287,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) => seq.GetNext()(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15> Sequence<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15>(params Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15>>() != null);
@@ -304,7 +305,7 @@ namespace DelegateMock.Implementation
          var seq = CreateSequence(funcSequence);
          return (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16) => seq.GetNext()(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16);
       }
-
+      
       public static Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15, TP16> Sequence<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15, TP16>(params Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15, TP16>[] funcSequence)
       {
          Contract.Ensures(Contract.Result<Action<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TP9, TP10, TP11, TP12, TP13, TP14, TP15, TP16>>() != null);
@@ -331,4 +332,5 @@ namespace DelegateMock.Implementation
          //Contract.EndContractBlock();
       }
    }
+// ReSharper enable RedundantLambdaSignatureParentheses
 }

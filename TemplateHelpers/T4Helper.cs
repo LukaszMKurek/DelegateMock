@@ -6,29 +6,27 @@ namespace TemplateHelpers
 {
    public static class T4Helper
    {
-      public static void From0To16(Action<Func<string, string>> action)
-      {
-         action(format => "");
-         From1To16(action);
-      }
+      public delegate string ForEach(string s1, string s2 = null, string s3 = null);
 
-      public static void From1To16(Action<Func<string, string>> action)
+      public static void ForEachInRange(int from, int to, Action<int, ForEach> action)
       {
-         for (int i = 1; i <= 16; i++)
-            action(format =>
+         for (int i = from; i <= to; i++)
+         {
+            int ii = i;
+            action(i, (s1, s2, s3) => // eventualy use one parameter where string separator is sign ' 
             {
+               string format = s3 == null ? s1 : s2;
+               string prefix = s3 == null ? "" : s1;
+               string suffix = s3 ?? (s2 ?? "");
+
                format = format.Replace("#", "{0}");
-               var formatedSequence = Enumerable.Range(1, i).Select(k => String.Format(format, k));
-               return String.Join(", ", formatedSequence);
+               var formatedSequence = Enumerable.Range(1, ii).Select(k => String.Format(format, k));
+               return String.Join(", ", formatedSequence).CWrap(prefix, suffix);
             });
+         }
       }
 
-      public static string CAdd(this string self, string suffix)
-      {
-         return self.Length == 0 ? self : self + suffix;
-      }
-
-      public static string CWrap(this string self, string prefix, string suffix)
+      private static string CWrap(this string self, string prefix, string suffix)
       {
          return self.Length == 0 ? self : prefix + self + suffix;
       }

@@ -1,9 +1,6 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ assembly name="System.Core" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Collections.Generic" #>
-<#@ output extension=".cs" #>
-<#@ include file="TemplateHelper.tt" #>
+﻿<#@ template debug="false" language="C#" #>
+<#@ assembly name="$(SolutionDir)\TemplateHelpers\bin\TemplateHelpers.dll" #>
+<#@ import namespace="TemplateHelpers" #>
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +9,12 @@ namespace DelegateMock.FunctionStub
 {
 // ReSharper disable TypeParameterCanBeVariant
 
-<# TemplateGeneratorHelper.ForEach((templateParametersWithComa, templateParametersWithBracked, parameters, parametersWithComa, parametersWithType, parametersWithTypeAndComa, parametersWithTypeA) => { #>
-   public interface IHolderFirst<#= templateParametersWithBracked #>
+<#T4Helper.ForEachInRange(0, 16, (i, _) => {#>
+   public interface IHolderFirst<#=_("<", "TP#", ">")#>
    {
-      Func<<#= templateParametersWithComa #>bool> Filter { get; }
+      Func<<#=_("TP#", ", ")#>bool> Filter { get; }
    }
    
-<# }); #>
+<#});#>
 // ReSharper restore TypeParameterCanBeVariant
 }
