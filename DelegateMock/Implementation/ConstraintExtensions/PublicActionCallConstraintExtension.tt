@@ -1,0 +1,78 @@
+<#@ template debug="false" language="C#" #>
+<#@ assembly name="$(SolutionDir)\TemplateHelpers\bin\TemplateHelpers.dll" #>
+<#@ import namespace="TemplateHelpers" #>
+using System.Linq;
+using System.Collections.Generic;
+using System;
+
+namespace DelegateMock.Implementation
+{
+   public static class PublicActionCallConstraintExtension
+   {
+<#T4Helper.ForEachInRange(0, 16, (i, _) => {#>
+      public static ActionCallConstraint<#=_("<", "TP#", ">")#> WithArgs<#=_("<", "TP#", ">")#>(this Action<#=_("<", "TP#", ">")#> action, params object[] arguments)
+      {
+         if (action == null)
+            throw new ArgumentNullException("action");
+         if (arguments == null)
+            throw new ArgumentNullException("arguments");
+
+         return WithArgs((ActionCallConstraint<#=_("<", "TP#", ">")#>)action, arguments);
+      }
+
+      public static ActionCallConstraint<#=_("<", "TP#", ">")#> WithArgs<#=_("<", "TP#", ">")#>(this ActionCallConstraint<#=_("<", "TP#", ">")#> actionCallConstraint, params object[] arguments)
+      {
+         if (actionCallConstraint == null)
+            throw new ArgumentNullException("actionCallConstraint");
+         if (arguments == null)
+            throw new ArgumentNullException("arguments");
+
+         return actionCallConstraint.AddFilter(reports => reports.Where(x => x.Arguments.SequenceEqual(arguments)));
+      }
+      // todo add ExpceptWithArgs
+
+      //-----------------------
+
+      // todo not working with nullable types
+      public static ActionCallConstraint<#=_("<", "TP#", ">")#> WithArgs<#=_("<", "TP#", ">")#>(this Action<#=_("<", "TP#", ">")#> action, Func<<#=_("TP#", ", ")#>bool> argsFilter)
+      {
+         if (action == null)
+            throw new ArgumentNullException("action");
+         if (argsFilter == null)
+            throw new ArgumentNullException("argsFilter");
+
+         return WithArgs((ActionCallConstraint<#=_("<", "TP#", ">")#>)action, argsFilter);
+      }
+
+      public static ActionCallConstraint<#=_("<", "TP#", ">")#> WithArgs<#=_("<", "TP#", ">")#>(this ActionCallConstraint<#=_("<", "TP#", ">")#> actionCallConstraint, Func<<#=_("TP#", ", ")#>bool> argsFilter)
+      {
+         if (actionCallConstraint == null)
+            throw new ArgumentNullException("actionCallConstraint");
+         if (argsFilter == null)
+            throw new ArgumentNullException("argsFilter");
+
+         return actionCallConstraint.AddFilter(reports => reports.Where(x => (bool)argsFilter.DynamicInvoke(x.Arguments.ToArray())));
+      }
+
+      //-----------------------
+
+      public static ActionCallConstraint<#=_("<", "TP#", ">")#> SecondCall<#=_("<", "TP#", ">")#>(this Action<#=_("<", "TP#", ">")#> action)
+      {
+         if (action == null)
+            throw new ArgumentNullException("action");
+
+         return SecondCall((ActionCallConstraint<#=_("<", "TP#", ">")#>)action);
+      }
+
+      public static ActionCallConstraint<#=_("<", "TP#", ">")#> SecondCall<#=_("<", "TP#", ">")#>(this ActionCallConstraint<#=_("<", "TP#", ">")#> actionCallConstraint)
+      {
+         if (actionCallConstraint == null)
+            throw new ArgumentNullException("actionCallConstraint");
+
+         return actionCallConstraint.AddFilter(reports => reports.Skip(1));
+      }
+      //--------------------------------------------------------------------------------------------------------------
+
+<#});#>
+   }
+}

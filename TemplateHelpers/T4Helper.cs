@@ -12,18 +12,25 @@ namespace TemplateHelpers
       {
          for (int i = from; i <= to; i++)
          {
-            int ii = i;
+            int multiplier = i;
             action(i, (s1, s2, s3) => // eventualy use one parameter where string separator is sign ' 
             {
-               string format = s3 == null ? s1 : s2;
-               string prefix = s3 == null ? "" : s1;
-               string suffix = s3 ?? (s2 ?? "");
+               if (s3 == null)
+                  return Compile("", s1, s2 ?? "", multiplier);
 
-               format = format.Replace("#", "{0}");
-               var formatedSequence = Enumerable.Range(1, ii).Select(k => String.Format(format, k));
-               return String.Join(", ", formatedSequence).CWrap(prefix, suffix);
+               return Compile(s1 ?? "", s2, s3, multiplier);
             });
          }
+      }
+
+      private static string Compile(string prefix, string format, string suffix, int multiplier)
+      {
+         if (format == null)
+            throw new ArgumentNullException("format");
+
+         format = format.Replace("#", "{0}");
+         var formatedSequence = Enumerable.Range(1, multiplier).Select(k => String.Format(format, k));
+         return String.Join(", ", formatedSequence).CWrap(prefix, suffix);
       }
 
       private static string CWrap(this string self, string prefix, string suffix)

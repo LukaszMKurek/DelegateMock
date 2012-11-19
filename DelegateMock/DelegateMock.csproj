@@ -104,12 +104,45 @@
       <DependentUpon>Node.tt</DependentUpon>
     </Compile>
     <Compile Include="FunctionStub\Sequence.cs" />
-    <Compile Include="FunctionStub\Stub.cs" />
-    <Compile Include="Implementation\ActionCallConstraint.cs" />
-    <Compile Include="Implementation\CallConstraint.cs" />
-    <Compile Include="Implementation\CallConstraintExtension.cs" />
+    <None Include="Implementation\Constraint\ActionCallConstraint.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ActionCallConstraint.cs</LastGenOutput>
+    </None>
+    <Compile Include="Implementation\ConstraintExtensions\CallConstraintExtension.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CallConstraintExtension.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Implementation\ConstraintExtensions\PublicActionCallConstraintExtension.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PublicActionCallConstraintExtension.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Implementation\ConstraintExtensions\PublicFuncCallConstraintExtension.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PublicFuncCallConstraintExtension.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Implementation\Constraint\ActionCallConstraint.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ActionCallConstraint.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Implementation\Constraint\CallConstraint.cs" />
+    <None Include="Implementation\ConstraintExtensions\CallConstraintExtension.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CallConstraintExtension.cs</LastGenOutput>
+    </None>
     <Compile Include="Implementation\CallReport.cs" />
-    <Compile Include="Implementation\FuncCallConstraint.cs" />
+    <None Include="Implementation\Constraint\FuncCallConstraint.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FuncCallConstraint.cs</LastGenOutput>
+    </None>
+    <Compile Include="Implementation\Constraint\FuncCallConstraint.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FuncCallConstraint.tt</DependentUpon>
+    </Compile>
     <Compile Include="Implementation\ImmutableList.cs" />
     <Compile Include="Implementation\Mock.cs" />
     <None Include="Implementation\MockExtension.tt">
@@ -121,7 +154,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MockExtension.tt</DependentUpon>
     </Compile>
-    <Compile Include="Implementation\PublicFuncCallConstraintExtension.cs" />
+    <None Include="Implementation\ConstraintExtensions\PublicActionCallConstraintExtension.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PublicActionCallConstraintExtension.cs</LastGenOutput>
+    </None>
+    <Compile Include="Implementation\ConstraintExtensions\PublicCallConstraintExtension.cs" />
+    <None Include="Implementation\ConstraintExtensions\PublicFuncCallConstraintExtension.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PublicFuncCallConstraintExtension.cs</LastGenOutput>
+    </None>
     <Compile Include="Implementation\Fun.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

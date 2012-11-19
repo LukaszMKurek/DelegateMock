@@ -1,0 +1,47 @@
+﻿<#@ template debug="false" language="C#" #>
+<#@ assembly name="$(SolutionDir)\TemplateHelpers\bin\TemplateHelpers.dll" #>
+<#@ import namespace="TemplateHelpers" #>
+using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Collections.Generic;
+using System;
+
+namespace DelegateMock.Implementation
+{
+<#T4Helper.ForEachInRange(0, 16, (i, _) => {#>
+   public sealed class FuncCallConstraint<<#=_("TP#", ", ")#>TRet> : CallConstraint
+   {
+      public FuncCallConstraint(Func<<#=_("TP#", ", ")#>TRet> function, ImmutableList<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> filters)
+         : base(function, filters)
+      {
+         if (function == null)
+            throw new ArgumentNullException("function");
+         if (filters == null)
+            throw new ArgumentNullException("filters");
+         //Contract.Requires(filters.Length == 0 || Contract.ForAll(filters, filter => filter != null));
+         Contract.Ensures(Filters.SequenceEqual(filters));
+         Contract.Ensures(Delegate == function);
+      }
+
+      public new Func<<#=_("TP#", ", ")#>TRet> Delegate // todo hide by explicit interface
+      {
+         get
+         {
+            Contract.Ensures(Contract.Result<Func<<#=_("TP#", ", ")#>TRet>>() != null);
+
+            return (Func<<#=_("TP#", ", ")#>TRet>)base.Delegate;
+         }
+      }
+
+      [Pure]
+      public static implicit operator FuncCallConstraint<<#=_("TP#", ", ")#>TRet>(Func<<#=_("TP#", ", ")#>TRet> func)
+      {
+         if (func == null)
+            throw new ArgumentNullException("func");
+
+         return new FuncCallConstraint<<#=_("TP#", ", ")#>TRet>(func, EmptyFilters);
+      }
+   }
+   
+<#});#>
+}

@@ -1,0 +1,88 @@
+<#@ template debug="false" language="C#" #>
+<#@ assembly name="$(SolutionDir)\TemplateHelpers\bin\TemplateHelpers.dll" #>
+<#@ import namespace="TemplateHelpers" #>
+using System.Linq;
+using System.Collections.Generic;
+using System;
+
+namespace DelegateMock.Implementation
+{
+   public static class PublicFuncCallConstraintExtension
+   {
+<#T4Helper.ForEachInRange(0, 16, (i, _) => {#>
+      public static FuncCallConstraint<<#=_("TP#", ", ")#>TRet> WithArgs<<#=_("TP#", ", ")#>TRet>(this Func<<#=_("TP#", ", ")#>TRet> func, params object[] arguments)
+      {
+         if (func == null)
+            throw new ArgumentNullException("func");
+         if (arguments == null)
+            throw new ArgumentNullException("arguments");
+
+         return WithArgs((FuncCallConstraint<<#=_("TP#", ", ")#>TRet>)func, arguments);
+      }
+
+      public static FuncCallConstraint<<#=_("TP#", ", ")#>TRet> WithArgs<<#=_("TP#", ", ")#>TRet>(this FuncCallConstraint<<#=_("TP#", ", ")#>TRet> funcCallConstraint, params object[] arguments)
+      {
+         if (funcCallConstraint == null)
+            throw new ArgumentNullException("funcCallConstraint");
+         if (arguments == null)
+            throw new ArgumentNullException("arguments");
+
+         return funcCallConstraint.AddFilter(reports => reports.Where(x => x.Arguments.SequenceEqual(arguments)));
+      }
+      // todo add ExpceptWithArgs
+
+      //-----------------------
+
+      // todo not working with nullable types
+      public static FuncCallConstraint<<#=_("TP#", ", ")#>TRet> WithArgs<<#=_("TP#", ", ")#>TRet>(this Func<<#=_("TP#", ", ")#>TRet> func, Func<<#=_("TP#", ", ")#>bool> argsFilter)
+      {
+         if (func == null)
+            throw new ArgumentNullException("func");
+         if (argsFilter == null)
+            throw new ArgumentNullException("argsFilter");
+
+         return WithArgs((FuncCallConstraint<<#=_("TP#", ", ")#>TRet>)func, argsFilter);
+      }
+
+      public static FuncCallConstraint<<#=_("TP#", ", ")#>TRet> WithArgs<<#=_("TP#", ", ")#>TRet>(this FuncCallConstraint<<#=_("TP#", ", ")#>TRet> funcCallConstraint, Func<<#=_("TP#", ", ")#>bool> argsFilter)
+      {
+         if (funcCallConstraint == null)
+            throw new ArgumentNullException("funcCallConstraint");
+         if (argsFilter == null)
+            throw new ArgumentNullException("argsFilter");
+
+         return funcCallConstraint.AddFilter(reports => reports.Where(x => (bool)argsFilter.DynamicInvoke(x.Arguments.ToArray())));
+      }
+
+      //-----------------------
+
+      public static FuncCallConstraint<<#=_("TP#", ", ")#>TRet> SecondCall<<#=_("TP#", ", ")#>TRet>(this Func<<#=_("TP#", ", ")#>TRet> func)
+      {
+         if (func == null)
+            throw new ArgumentNullException("func");
+
+         return SecondCall((FuncCallConstraint<<#=_("TP#", ", ")#>TRet>)func);
+      }
+
+      public static FuncCallConstraint<<#=_("TP#", ", ")#>TRet> SecondCall<<#=_("TP#", ", ")#>TRet>(this FuncCallConstraint<<#=_("TP#", ", ")#>TRet> funcCallConstraint)
+      {
+         if (funcCallConstraint == null)
+            throw new ArgumentNullException("funcCallConstraint");
+
+         return funcCallConstraint.AddFilter(reports => reports.Skip(1));
+      }
+
+      //-------------------------
+
+      public static FuncCallConstraint<<#=_("TP#", ", ")#>TRet> ThatReturn<<#=_("TP#", ", ")#>TRet>(this FuncCallConstraint<<#=_("TP#", ", ")#>TRet> funcCallConstraint, TRet returnValue)
+      {
+         if (funcCallConstraint == null)
+            throw new ArgumentNullException("funcCallConstraint");
+
+         return funcCallConstraint.AddFilter(reports => reports.Where(x => Equals(x.ReturnValue, returnValue)));
+      }
+      //----------------------------------------------------------------------------------------------------------------
+
+<#});#>
+   }
+}

@@ -6,27 +6,6 @@ namespace DelegateMock.FunctionStub
 {
    public sealed class Sequence<TItem>
    {
-      private readonly IEnumerator<TItem> _enumerator;
-
-      public Sequence(IEnumerable<TItem> items)
-      {
-         _enumerator = items.GetEnumerator();
-      }
-
-      public TItem GetNext() // to mo¿e byæextension method
-      {
-         lock (_enumerator)
-         {
-            if (_enumerator.MoveNext() == false)
-               throw new Exception("No more elements to return.");
-
-            return _enumerator.Current;
-         }
-      }
-   }
-
-   /*public sealed class Sequence<TItem>
-   {
       private readonly Stack<TItem> _items;
 
       public Sequence(IEnumerable<TItem> items)
@@ -44,5 +23,5 @@ namespace DelegateMock.FunctionStub
             return _items.Pop();
          }
       }
-   }*/
+   }
 }

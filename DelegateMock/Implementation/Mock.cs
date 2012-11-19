@@ -2,6 +2,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using DelegateMock.Implementation;
 
 namespace DelegateMock.Implementation
 {

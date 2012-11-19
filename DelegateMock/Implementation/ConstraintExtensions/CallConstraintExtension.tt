@@ -1,3 +1,6 @@
+<#@ template debug="false" language="C#" #>
+<#@ assembly name="$(SolutionDir)\TemplateHelpers\bin\TemplateHelpers.dll" #>
+<#@ import namespace="TemplateHelpers" #>
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Collections.Generic;
@@ -44,9 +47,11 @@ namespace DelegateMock.Implementation
          
          return new CallConstraint(self.Delegate, filters);
       }
+      //------------------------------------------
 
+<#T4Helper.ForEachInRange(0, 16, (i, _) => {#>
       [Pure]
-      public static FuncCallConstraint<TP1, TRet> AddFilter<TP1, TRet>(this FuncCallConstraint<TP1, TRet> self, Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
+      public static FuncCallConstraint<<#=_("TP#", ", ")#>TRet> AddFilter<<#=_("TP#", ", ")#>TRet>(this FuncCallConstraint<<#=_("TP#", ", ")#>TRet> self, Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
       {
          if (self == null)
             throw new ArgumentNullException("self");
@@ -56,11 +61,11 @@ namespace DelegateMock.Implementation
          var filters = self.Filters.Add(filter);
          Contract.Assume(filters.Length > 0 && filters.All(f => f != null));
 
-         return new FuncCallConstraint<TP1, TRet>(self.Delegate, filters);
+         return new FuncCallConstraint<<#=_("TP#", ", ")#>TRet>(self.Delegate, filters);
       }
 
       [Pure]
-      public static ActionCallConstraint<TP1> AddFilter<TP1>(this ActionCallConstraint<TP1> self, Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
+      public static ActionCallConstraint<#=_("<", "TP#", ">")#> AddFilter<#=_("<", "TP#", ">")#>(this ActionCallConstraint<#=_("<", "TP#", ">")#> self, Func<IEnumerable<CallReport>, IEnumerable<CallReport>> filter)
       {
          if (self == null)
             throw new ArgumentNullException("self");
@@ -70,7 +75,10 @@ namespace DelegateMock.Implementation
          var filters = self.Filters.Add(filter);
          Contract.Assume(filters.Length > 0 && filters.All(f => f != null));
 
-         return new ActionCallConstraint<TP1>(self.Delegate, filters);
+         return new ActionCallConstraint<#=_("<", "TP#", ">")#>(self.Delegate, filters);
       }
+      //--------------------------------------------
+
+<#});#>
    }
 }

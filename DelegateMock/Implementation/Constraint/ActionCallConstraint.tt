@@ -1,0 +1,47 @@
+﻿<#@ template debug="false" language="C#" #>
+<#@ assembly name="$(SolutionDir)\TemplateHelpers\bin\TemplateHelpers.dll" #>
+<#@ import namespace="TemplateHelpers" #>
+using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Collections.Generic;
+using System;
+
+namespace DelegateMock.Implementation
+{
+<#T4Helper.ForEachInRange(0, 16, (i, _) => {#>
+   public sealed class ActionCallConstraint<#=_("<", "TP#", ">")#> : CallConstraint
+   {
+      public ActionCallConstraint(Action<#=_("<", "TP#", ">")#> action, ImmutableList<Func<IEnumerable<CallReport>, IEnumerable<CallReport>>> filters)
+         : base(action, filters)
+      {
+         if (action == null)
+            throw new ArgumentNullException("action");
+         if (filters == null)
+            throw new ArgumentNullException("filters");
+         //Contract.Requires(filters.Length == 0 || Contract.ForAll(filters, filter => filter != null));
+         Contract.Ensures(Filters.SequenceEqual(filters));
+         Contract.Ensures(Delegate == action);
+      }
+
+      public new Action<#=_("<", "TP#", ">")#> Delegate // todo hide by explicit interface
+      {
+         get
+         {
+            Contract.Ensures(Contract.Result<Action<#=_("<", "TP#", ">")#>>() != null);
+
+            return (Action<#=_("<", "TP#", ">")#>)base.Delegate;
+         }
+      }
+
+      [Pure]
+      public static implicit operator ActionCallConstraint<#=_("<", "TP#", ">")#>(Action<#=_("<", "TP#", ">")#> func)
+      {
+         if (func == null)
+            throw new ArgumentNullException("func");
+
+         return new ActionCallConstraint<#=_("<", "TP#", ">")#>(func, EmptyFilters);
+      }
+   }
+
+<#});#>
+}
